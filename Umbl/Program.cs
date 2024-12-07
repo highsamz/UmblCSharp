@@ -1,30 +1,48 @@
 using Microsoft.EntityFrameworkCore;
-using Umbl.Data.Contexts; // Ajuste para o namespace correto do DatabaseContext
+using Umbl.Data.Contexts;
 using Microsoft.Extensions.DependencyInjection;
 using Umbl.Data.Repository;
 using Umbl.Data.Repository.Umbl.Data.Repository;
-using Umbl.Data.Contexts.Umbl.Data.Contexts; // Ajuste para o namespace correto do repositório
+using Umbl.Data.Contexts.Umbl.Data.Contexts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do banco de dados Oracle
+#region Auth
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("LongingRustedSeventeenDaybreakFurnaceNineBenignHomecomingOneFreightcar")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+
+        };
+    }
+);
+#endregion
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("OracleConnection"))
 );
 
-// Registro do repositório IPontoColetaRepository e sua implementação
 builder.Services.AddScoped<IPontoColetaRepository, PontoColetaRepository>();
 
-// Adiciona os serviços do MVC (controladores e views)
 builder.Services.AddControllers();
 
-// Configura o Swagger para documentação da API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configuração do pipeline de requisição HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,10 +50,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRouting(); // Certifica que o roteamento está ativado
+app.UseRouting();
 app.UseAuthorization();
 
-// Mapeia as rotas para os controladores
 app.MapControllers();
 
 app.Run();

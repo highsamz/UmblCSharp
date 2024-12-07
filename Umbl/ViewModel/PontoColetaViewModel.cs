@@ -4,7 +4,7 @@ namespace Umbl.ViewModels
 {
     public class PontoColetaViewModel
     {
-        public int Id { get; set; }  // Opcional para criação, obrigatório para atualização
+        public int Id { get; set; } 
 
         [Required(ErrorMessage = "Capacidade é obrigatória")]
         public int Capacidade { get; set; }
@@ -21,7 +21,7 @@ namespace Umbl.ViewModels
         public EnderecoViewModel Endereco { get; set; }
 
         [Required(ErrorMessage = "Material Aceito é obrigatório")]
-        public string MaterialAceito { get; set; } // Pode ser do tipo string para simplificar o payload
+        public string MaterialAceito { get; set; } 
     }
 
     public class EnderecoViewModel

@@ -4,7 +4,7 @@
 
     public class EnderecoPontoColetaModel
     {
-        public int Id { get; set; }  // Usando um Id único para chave primária
+        public int Id { get; set; }
 
         [Required]
         public string Logradouro { get; set; }
