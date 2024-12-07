@@ -24,12 +24,23 @@ namespace Umbl.Controllers
             }
 
             [HttpGet]
-            [Authorize(Roles = "operador,analista,gerente")]
-            public ActionResult<IEnumerable<PontoColetaModel>> GetAll()
+            public ActionResult<PaginatedResult<PontoColetaModel>> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
             {
-                var pontosColeta = _repository.GetAll();
-                return Ok(pontosColeta);
+                if (pageNumber <= 0 || pageSize <= 0)
+                {
+                    return BadRequest("O número da página e o tamanho da página devem ser maiores que zero.");
+                }
+
+                var result = _repository.GetAllPaginated(pageNumber, pageSize);
+
+                if (result.Items.Count == 0)
+                {
+                    return NotFound("Nenhum ponto de coleta encontrado para a página solicitada.");
+                }
+
+                return Ok(result);
             }
+
 
             [HttpGet("{id}")]
             [Authorize(Roles = "operador,analista,gerente")]

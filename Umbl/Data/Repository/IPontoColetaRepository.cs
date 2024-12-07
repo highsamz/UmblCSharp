@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using global::Umbl.Models;
+    using global::Umbl.Services;
 
     namespace Umbl.Data.Repository
     {
@@ -12,6 +13,9 @@
             void Add(PontoColetaModel pontoColeta);
             void Update(PontoColetaModel pontoColeta);
             void Delete(int id);
+
+            PaginatedResult<PontoColetaModel> GetAllPaginated(int pageNumber, int pageSize);
+
         }
 
     }

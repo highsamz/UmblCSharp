@@ -8,6 +8,7 @@ using Umbl.Data.Repository.Umbl.Data.Repository;
 namespace Umbl.Data.Repository
 {
     using global::Umbl.Data.Contexts.Umbl.Data.Contexts;
+    using global::Umbl.Services;
     using Microsoft.EntityFrameworkCore;
 
     namespace Umbl.Data.Repository
@@ -21,8 +22,40 @@ namespace Umbl.Data.Repository
                 _context = context;
             }
 
-            public IEnumerable<PontoColetaModel> GetAll()
-                => _context.PontosColeta.Include(p => p.EnderecoPontoColetaModel).ToList();
+            public PaginatedResult<PontoColetaModel> GetAllPaginated(int pageNumber, int pageSize)
+            {
+                if (pageNumber < 1 || pageSize < 1)
+                {
+                    throw new ArgumentException("O número da página e o tamanho da página devem ser maiores que zero.");
+                }
+
+                try
+                {
+                    var query = _context.PontosColeta.Include(p => p.EnderecoPontoColetaModel);
+
+                var totalItems = query.Count();
+
+                var items = query
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                return new PaginatedResult<PontoColetaModel>
+                {
+                    Items = items,
+                    TotalItems = totalItems,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+                };
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Erro ao obter os dados paginados", ex);
+                }
+            }
+
+
 
             public PontoColetaModel GetById(int id)
                 => _context.PontosColeta.Include(p => p.EnderecoPontoColetaModel).FirstOrDefault(p => p.Id == id);
@@ -47,6 +80,11 @@ namespace Umbl.Data.Repository
                     _context.PontosColeta.Remove(pontoColeta);
                     _context.SaveChanges();
                 }
+            }
+
+            public IEnumerable<PontoColetaModel> GetAll()
+            {
+                throw new NotImplementedException();
             }
         }
     }
