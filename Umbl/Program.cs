@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Umbl.Data.Contexts; // Ajuste para o namespace correto do DatabaseContext
 using Microsoft.Extensions.DependencyInjection;
-using Umbl.Data.Contexts.Umbl.Data.Contexts;
+using Umbl.Data.Repository;
+using Umbl.Data.Repository.Umbl.Data.Repository;
+using Umbl.Data.Contexts.Umbl.Data.Contexts; // Ajuste para o namespace correto do repositório
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("OracleConnection"))
 );
+
+// Registro do repositório IPontoColetaRepository e sua implementação
+builder.Services.AddScoped<IPontoColetaRepository, PontoColetaRepository>();
 
 // Adiciona os serviços do MVC (controladores e views)
 builder.Services.AddControllers();
