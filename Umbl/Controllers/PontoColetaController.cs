@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Umbl.Services;
-
-namespace Umbl.Controllers
-{
+﻿    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Umbl.Services;
     using global::Umbl.Data.Repository.Umbl.Data.Repository;
     using global::Umbl.Models;
     using Microsoft.AspNetCore.Authorization;
@@ -97,4 +93,3 @@ namespace Umbl.Controllers
 
         }
     }
-}
